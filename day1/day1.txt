@@ -1,0 +1,235 @@
+E-COMMERCE CUSTOMER SUPPORT SYSTEM
+MongoDB Commands
+
+
+1. Start MongoDB
+
+mongosh
+
+
+2. Create / use database
+
+use ecommerce_support
+
+
+3. Users
+
+Users can be:
+- CUSTOMER
+- SUPPORT_AGENT
+- TEAM_LEAD
+- ADMIN
+
+Command:
+
+db.users.insertMany([
+  {
+    name: "Hasini",
+    email: "hasini@gmail.com",
+    role: "CUSTOMER"
+  },
+  {
+    name: "Rahul",
+    email: "rahul@gmail.com",
+    role: "CUSTOMER"
+  },
+  {
+    name: "Priya",
+    email: "priya@company.com",
+    role: "SUPPORT_AGENT"
+  },
+  {
+    name: "Arjun",
+    email: "arjun@company.com",
+    role: "TEAM_LEAD"
+  },
+  {
+    name: "Admin",
+    email: "admin@company.com",
+    role: "ADMIN"
+  }
+])
+
+To check:
+
+db.users.find()
+
+
+4. Categories
+
+Categories given in the problem:
+
+ORDER_NOT_RECEIVED
+WRONG_ITEM
+DAMAGED_ITEM
+CANCEL_ORDER
+REFUND
+RETURN
+PAYMENT_ISSUE
+DELIVERY_ISSUE
+
+Command:
+
+db.categories.insertMany([
+  { name: "ORDER_NOT_RECEIVED" },
+  { name: "WRONG_ITEM" },
+  { name: "DAMAGED_ITEM" },
+  { name: "CANCEL_ORDER" },
+  { name: "REFUND" },
+  { name: "RETURN" },
+  { name: "PAYMENT_ISSUE" },
+  { name: "DELIVERY_ISSUE" }
+])
+
+To check:
+
+db.categories.find()
+
+
+5. Orders
+
+Create some sample orders.
+
+db.orders.insertMany([
+  {
+    orderId: "ORD1001",
+    customerId: "Hasini",
+    items: [
+      {
+        product: "Wireless Mouse",
+        quantity: 1,
+        price: 799
+      }
+    ],
+    totalAmount: 799,
+    paymentStatus: "PAID",
+    deliveryStatus: "DELIVERED"
+  },
+  {
+    orderId: "ORD1002",
+    customerId: "Rahul",
+    items: [
+      {
+        product: "Keyboard",
+        quantity: 1,
+        price: 1200
+      }
+    ],
+    totalAmount: 1200,
+    paymentStatus: "PAID",
+    deliveryStatus: "DELIVERED"
+  }
+])
+
+To check:
+
+db.orders.find()
+
+
+6. Tickets
+
+Example:
+Hasini received the wrong item for order ORD1001.
+
+Create ticket:
+
+db.tickets.insertOne({
+  customerId: "Hasini",
+  orderId: "ORD1001",
+  category: "WRONG_ITEM",
+   description: "I received a keyboard instead of a wireless mouse.",
+  assignedAgent: null,
+  status: "NEW",
+  
+})
+
+Check:
+
+db.tickets.find()
+
+
+7. Assign ticket to agent
+
+Team lead assigns the ticket to Priya.
+
+db.tickets.updateOne(
+  { ticketId: "TKT1001" },
+  {
+    $set: {
+      assignedAgent: "Priya",
+      status: "ASSIGNED"
+    }
+  }
+)
+
+Check:
+
+db.tickets.find({ ticketId: "TKT1001" })
+
+
+8. Start working on ticket
+
+Agent starts investigating.
+
+db.tickets.updateOne(
+  { ticketId: "TKT1001" },
+  {
+    $set: {
+      status: "IN_PROGRESS"
+    }
+  }
+)
+
+Check:
+
+db.tickets.find({ ticketId: "TKT1001" })
+
+
+9. Comments
+
+Agent can add a comment.
+
+db.comments.insertOne({
+  ticketId: "TKT1001",
+  author: "Priya",
+  message: "I verified the order details. The customer received the wrong item.",
+  createdAt: new Date()
+})
+
+Check:
+
+db.comments.find()
+
+10. Resolve ticket
+
+After investigating, agent resolves the issue.
+
+db.tickets.updateOne(
+  { ticketId: "TKT1001" },
+  {
+    $set: {
+      status: "RESOLVED",
+      resolution: "Replacement product shipped to customer."
+    }
+  }
+)
+
+Check:
+
+db.tickets.find({ ticketId: "TKT1001" })
+
+
+12. Close ticket
+
+After customer confirms:
+
+db.tickets.updateOne(
+  { ticketId: "TKT1001" },
+  {
+    $set: {
+      status: "CLOSED"
+    }
+  }
+)
+
+
