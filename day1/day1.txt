@@ -134,7 +134,6 @@ Hasini received the wrong item for order ORD1001.
 Create ticket:
 
 db.tickets.insertOne({
-  customerId: "Hasini",
   orderId: "ORD1001",
   category: "WRONG_ITEM",
    description: "I received a keyboard instead of a wireless mouse.",
